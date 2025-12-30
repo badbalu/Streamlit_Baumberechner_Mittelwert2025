@@ -2,37 +2,36 @@ import streamlit as st
 
 st.header("Baumvolumenberechner")
 
-mittelwert = float(st.number_input("Mittelwert des Baumes:"))
+# Eingabe Mittelwert in cm
+mittelwert = st.number_input("Mittelwert des Baumes (cm):", min_value=0.0, step=0.1)
 
+# Auswahl der Länge
 laenge = st.selectbox(
-    "Wie lange ist er?",
-    ["5,10m", "4,10m", "Benutzerdefinierte Länge"]
+    "Wie lange ist der Baum?",
+    ["5,20m", "4,10m", "Benutzerdefinierte Länge"]
 )
 
+# Benutzerdefinierte Länge
+l = None
 if laenge == "Benutzerdefinierte Länge":
-    l = float(st.number_input("Wie lautet das Benutzerdefinierte maß? (cm)"))
+    l = st.number_input("Benutzerdefinierte Länge (m):", min_value=0.0, step=0.1)
 
+# Berechnung
 if st.button("Berechnen"):
-        if laenge == "5,10m":
-            wert1 = mittelwert * mittelwert
-            wert2 = wert1 * 3.14
-            wert3 = wert2 * 510
-            wert4 = wert3 / 1000000
-        
-            st.write(f"Ergebnis: {wert4}m³")
-        
-        elif laenge == "4,20m":
-             wert1 = mittelwert * mittelwert
-             wert2 = wert1 * 3.14
-             wert3 = wert2 * 420
-             wert4 = wert3 / 1000000
+    # Mittelwert in Meter umrechnen
+    mittelwert_m = mittelwert / 100  
 
-             st.write(f"Ergebnis: {wert4}m³")
+    if laenge == "5,20m":
+        laenge_m = 5.20
+    elif laenge == "4,10m":
+        laenge_m = 4.10
+    elif laenge == "Benutzerdefinierte Länge":
+        if l is None or l == 0:
+            st.error("Bitte eine gültige Länge eingeben.")
+        else:
+            laenge_m = l
 
-        elif laenge == "Benutzerdefinierte Laenge":
-            wert1 = mittelwert * mittelwert
-            wert2 = wert1 * 3.14
-            wert3 = wert2 * l
-            wert4 = wert3 / 1000000
-
-            st.write(f"Ergebnis: {wert4}m³")
+    # Volumenberechnung: Kreisfläche * Länge
+    if laenge != "Benutzerdefinierte Länge" or (l is not None and l > 0):
+        volumen = 3.14 * (mittelwert_m / 2) ** 2 * laenge_m
+        st.write(f"Ergebnis: {volumen:.4f} m³")
